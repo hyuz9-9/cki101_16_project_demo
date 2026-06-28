@@ -1,0 +1,14 @@
+services:
+  web:
+    # 指定使用當前目錄下的 Dockerfile 進行建置
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # 將主機的 Port 80 映射到容器內部的 Port 5000
+    ports:
+      - "80:5000"
+    # 設定容器重啟原則
+    restart: always
+    # 設定環境變數
+    environment:
+      - PYTHONUNBUFFERED=1
