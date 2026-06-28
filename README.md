@@ -160,7 +160,7 @@ Docker Compose 也會一併啟動 MySQL 8.4 容器：
 ### 3. 刪除使用者 (DELETE)
 - **指令**（以刪除 ID 為 `1` 的使用者為例）：
   ```bash
-  curl -X DELETE http://localhost/user/1
+  curl -X DELETE http://localhost/api/users/1
   ```
 - **成功回應**：
   ```json
@@ -168,6 +168,37 @@ Docker Compose 也會一併啟動 MySQL 8.4 容器：
     "message": "User 1 deleted successfully"
   }
   ```
+
+---
+
+## GCP Cloud Storage 瀏覽器使用說明 (/gcp)
+
+本專案提供 `/gcp` 前端網頁，可輸入 GCP Project ID 來瀏覽 GCS 儲存桶。
+
+### 1. 憑證設定
+本功能使用 **Google 應用程式預設憑證 (Application Default Credentials, ADC)** 進行驗證：
+
+- **本地端 (開發環境)**：
+  請在本地端執行以下指令進行驗證登入：
+  ```bash
+  gcloud auth application-default login
+  ```
+  系統會自動將憑證儲存於本地目錄（macOS/Linux 為 `~/.config/gcloud`）。
+
+- **Docker 容器環境**：
+  `docker-compose.yml` 已經設定將您本地的憑證目錄掛載至容器內：
+  ```yaml
+  volumes:
+    - ~/.config/gcloud:/root/.config/gcloud
+  ```
+  因此容器內的程式能自動讀取您本地的驗證狀態。
+
+- **GCP 伺服器部署環境**：
+  在 GCP 虛擬機 (GCE) 上運行時，請確保該 VM 的服務帳戶 (Service Account) 擁有 `Storage Viewer` 或 `Storage Admin` 的 IAM 權限，程式便能自動取得驗證，不需額外設定金鑰。
+
+### 2. 操作方式
+打開瀏覽器訪問 [http://localhost/gcp](http://localhost/gcp)，在左側輸入您的 GCP 專案 ID（例如 `my-project-123`）並點擊 **「查詢 Buckets」**，即可在右側檢視該專案下的所有 GCS 儲存桶。
+
 
 
 

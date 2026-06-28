@@ -3,6 +3,7 @@ import time
 import pymysql
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
+from google.cloud import storage
 
 # 載入本地 .env 檔案（如果有的話）
 load_dotenv()
@@ -124,6 +125,41 @@ def delete_user(user_id):
         conn.close()
         return jsonify({"message": f"User {user_id} deleted successfully"}), 200
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# ==========================================
+# GCP Cloud Storage 瀏覽功能
+# ==========================================
+
+@app.route('/gcp')
+def gcp_interface():
+    return render_template('gcp.html')
+
+@app.route('/api/gcp/buckets')
+def list_gcs_buckets():
+    project_id = request.args.get('project_id')
+    if not project_id:
+        return jsonify({"error": "Missing 'project_id' parameter"}), 400
+
+    try:
+        # 使用 Application Default Credentials (ADC) 初始化 GCS Client，並指定專案 ID
+        storage_client = storage.Client(project=project_id)
+        # 列出該專案下的所有 Buckets
+        buckets = list(storage_client.list_buckets())
+
+        result = []
+        for bucket in buckets:
+            result.append({
+                "name": bucket.name,
+                "location": bucket.location,
+                "location_type": bucket.location_type,
+                "storage_class": bucket.storage_class,
+                "time_created": bucket.time_created.strftime("%Y-%m-%d %H:%M:%S %Z") if bucket.time_created else "Unknown"
+            })
+        return jsonify(result), 200
+    except Exception as e:
+        # 若無登入、權限不足或專案 ID 有誤，將詳細錯誤回傳前端展示
         return jsonify({"error": str(e)}), 500
 
 

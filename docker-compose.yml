@@ -16,6 +16,10 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      # 掛載本地 GCP 憑證目錄以利容器內使用本地 ADC 進行驗證 (macOS / Linux 預設路徑)
+      - ~/.config/gcloud:/root/.config/gcloud
+
 
 
   db:
