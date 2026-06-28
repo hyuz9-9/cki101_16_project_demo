@@ -102,3 +102,72 @@ docker run -d -p 80:5000 --name flask-app-container flask-app-demo
 
 同樣地，啟動後可直接透過 [http://localhost](http://localhost) 訪問網頁。
 
+### 4. MySQL 服務設定說明 (透過 Docker Compose)
+
+Docker Compose 也會一併啟動 MySQL 8.4 容器：
+- **容器名稱**：`mysql.cki101`
+- **版本**：MySQL 8.4 LTS
+- **Port 映射**：將主機的 `8625` port 映射到容器內部的 `3306` port。
+- **資料持久化**：資料庫實體檔案將保存在專案根目錄底下的 `db_data` 資料夾內。
+- **環境變數設定**：請將 `.env` 檔案放在專案根目錄下設定帳號密碼，預設包含：
+  ```ini
+  MYSQL_ROOT_PASSWORD=root_password
+  MYSQL_DATABASE=cki101_db
+  MYSQL_USER=cki101_user
+  MYSQL_PASSWORD=cki101_password
+  ```
+
+---
+
+## 使用者 CRUD API 使用說明 (/user)
+
+專案提供 `/user` 路徑以管理使用者。可用於測試的 `curl` 指令範例如下（假設本地連接埠映射至 `5001` 或容器映射至主機 `80`）：
+
+### 1. 新增使用者 (POST)
+- **要求**：JSON 格式包含 `name` 與 `age`
+- **指令**：
+  ```bash
+  curl -X POST -H "Content-Type: application/json" \
+       -d '{"name": "張三", "age": 28}' \
+       http://localhost/user
+  ```
+- **成功回應**：
+  ```json
+  {
+    "message": "User created successfully",
+    "id": 1,
+    "name": "張三",
+    "age": 28
+  }
+  ```
+
+### 2. 查詢所有使用者 (GET)
+- **指令**：
+  ```bash
+  curl http://localhost/user
+  ```
+- **成功回應**：
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "張三",
+      "age": 28
+    }
+  ]
+  ```
+
+### 3. 刪除使用者 (DELETE)
+- **指令**（以刪除 ID 為 `1` 的使用者為例）：
+  ```bash
+  curl -X DELETE http://localhost/user/1
+  ```
+- **成功回應**：
+  ```json
+  {
+    "message": "User 1 deleted successfully"
+  }
+  ```
+
+
+

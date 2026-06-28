@@ -9,6 +9,26 @@ services:
       - "80:5000"
     # 設定容器重啟原則
     restart: always
-    # 設定環境變數
     environment:
       - PYTHONUNBUFFERED=1
+      - DB_HOST=mysql.cki101
+      - DB_PORT=3306
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+
+  db:
+    image: mysql:8.4
+    container_name: mysql.cki101
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "8625:3306"
+    volumes:
+      - ./db_data:/var/lib/mysql
+

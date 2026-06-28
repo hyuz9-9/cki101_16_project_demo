@@ -9,8 +9,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 複製主程式
+# 複製主程式與範本資料夾
 COPY app.py .
+COPY templates/ ./templates/
+
 
 # 宣告容器內部監聽的 Port (Flask 預設為 5000)
 EXPOSE 5000

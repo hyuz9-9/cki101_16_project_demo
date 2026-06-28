@@ -17,3 +17,7 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# Database data
+db_data/
+
